@@ -398,8 +398,6 @@ body{font-family:var(--fb);color:var(--txt);font-size:14px}
   <div class="qlbl">Ajouter un repas</div>
   <div class="qrow">
     <div class="qchip" onclick="openTab(1)">Coach IA</div>
-    <div class="qchip" onclick="openScan('photo')">Scan photo</div>
-    <div class="qchip" onclick="openScan('barcode')">Code-barres</div>
     <div class="qchip" onclick="openFrigoMealModal()">Frigo</div>
   </div>
   <div class="card" style="margin-top:8px">
@@ -434,10 +432,11 @@ body{font-family:var(--fb);color:var(--txt);font-size:14px}
   <div class="card">
     <div class="ctitle">Poids</div>
     <div class="frow" style="margin-bottom:8px">
-      <input class="finp" id="winp" type="number" placeholder="78.5 kg" step="0.1" style="flex:1">
-      <button class="btn btn-g btn-sm" onclick="saveWeight()">Enregistrer</button>
+      <input class="finp" id="winp" type="number" placeholder="78.5 kg" step="0.1" style="flex:1.5">
+      <input class="finp" id="wdate" type="date" style="flex:1;font-size:12px">
+      <button class="btn btn-g btn-sm" onclick="saveWeight()">OK</button>
     </div>
-    <svg id="wsvg" viewBox="0 0 320 110" style="width:100%;display:block"></svg>
+    <svg id="wsvg" viewBox="0 0 320 120" style="width:100%;display:block"></svg>
     <div class="wstats" id="wstats"></div>
   </div>
 
@@ -592,11 +591,39 @@ body{font-family:var(--fb);color:var(--txt);font-size:14px}
       <div class="dchip" onclick="toggleDiet(this,'lowcarb')">Low-carb</div>
     </div>
   </div>
+  <!-- OBJECTIF CALORIQUE MANUEL — mis en avant -->
+  <div class="card" style="border-color:var(--g);background:linear-gradient(135deg,var(--bg2),rgba(46,201,87,.04))">
+    <div class="ctitle">Objectif calorique</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="flex:1">
+        <input class="finp" id="p-kcal-goal" type="number" placeholder="Ex : 1800"
+          style="font-family:var(--fh);font-size:24px;font-weight:800;color:var(--g);background:transparent;border:none;border-bottom:2px solid var(--g);border-radius:0;padding:4px 0;width:100%"
+          oninput="savePro()">
+      </div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.4">kcal<br>par jour</div>
+    </div>
+    <div style="font-size:11px;color:var(--txt3)">Laisse vide pour utiliser le TDEE calculé automatiquement.</div>
+  </div>
   <div class="card">
     <div class="ctitle">TDEE calculé</div>
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="tdee-big" id="tdee-big">—</div><div style="font-size:10px;color:var(--txt3)">kcal/jour recommandées</div></div>
+      <div><div class="tdee-big" id="tdee-big">—</div><div style="font-size:10px;color:var(--txt3)">kcal/jour estimées</div></div>
       <div style="font-size:10px;color:var(--txt3);text-align:right" id="bmr-info"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Modes de cuisson disponibles</div>
+    <div class="dchips" id="cook-chips">
+      <div class="dchip" onclick="toggleCook(this,'poele')">Poêle</div>
+      <div class="dchip" onclick="toggleCook(this,'four')">Four</div>
+      <div class="dchip" onclick="toggleCook(this,'vapeur')">Vapeur</div>
+      <div class="dchip" onclick="toggleCook(this,'cru')">Cru / Salade</div>
+      <div class="dchip" onclick="toggleCook(this,'casserole')">Casserole</div>
+      <div class="dchip" onclick="toggleCook(this,'wok')">Wok</div>
+      <div class="dchip" onclick="toggleCook(this,'micro-ondes')">Micro-ondes</div>
+      <div class="dchip" onclick="toggleCook(this,'grill')">Grill / BBQ</div>
+      <div class="dchip" onclick="toggleCook(this,'friture')">Friture</div>
+      <div class="dchip" onclick="toggleCook(this,'mijoteuse')">Mijoteuse</div>
     </div>
   </div>
   <div class="card">
@@ -644,20 +671,6 @@ body{font-family:var(--fb);color:var(--txt);font-size:14px}
 </nav>
 </div><!-- /app -->
 
-<!-- SCAN OVERLAY -->
-<div style="position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center" id="scan-ov">
-  <div style="font-family:var(--fh);font-size:15px;font-weight:700;color:var(--txt);margin-bottom:16px" id="scan-ttl">Scanner</div>
-  <div style="width:230px;height:230px;border:2px solid var(--g);border-radius:16px;position:relative;overflow:hidden">
-    <video id="scan-vid" autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);animation:scln 2s linear infinite"></div>
-  </div>
-  <div style="color:var(--txt2);font-size:12px;margin-top:12px" id="scan-lbl">Pointez vers votre aliment</div>
-  <div style="display:flex;gap:10px;margin-top:16px">
-    <button class="btn btn-g" onclick="captureScan()">Capturer</button>
-    <button class="btn btn-o" onclick="closeScan()">Fermer</button>
-  </div>
-</div>
-<style>@keyframes scln{0%{top:0}100%{top:100%}}</style>
 
 <!-- FRIGO INGREDIENT SELECTOR (chat +) -->
 <div class="ov" id="ov-frigo-sel">
@@ -685,7 +698,23 @@ body{font-family:var(--fb);color:var(--txt);font-size:14px}
       <label class="flbl">Catégorie</label>
       <div id="cat-chips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
     </div>
-    <button class="btn btn-g btn-w" style="margin-top:6px" onclick="addIng()">Ajouter</button>
+    <!-- Advanced nutrition toggle -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:8px 0 10px;cursor:pointer" onclick="toggleFrigoAdv()">
+      <span style="font-size:11px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Valeurs nutritionnelles (optionnel)</span>
+      <svg id="frigo-adv-arrow" viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--txt3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div id="frigo-adv" style="display:none">
+      <div style="font-size:11px;color:var(--txt3);margin-bottom:8px">Pour 100g ou 100ml</div>
+      <div class="frow" style="margin-bottom:8px">
+        <div style="flex:1"><label class="flbl">kcal</label><input class="finp" id="ing-kcal" type="number" placeholder="0" style="font-size:12px"></div>
+        <div style="flex:1"><label class="flbl">Protéines g</label><input class="finp" id="ing-prot" type="number" placeholder="0" style="font-size:12px"></div>
+      </div>
+      <div class="frow" style="margin-bottom:10px">
+        <div style="flex:1"><label class="flbl">Glucides g</label><input class="finp" id="ing-gluc" type="number" placeholder="0" style="font-size:12px"></div>
+        <div style="flex:1"><label class="flbl">Lipides g</label><input class="finp" id="ing-lip" type="number" placeholder="0" style="font-size:12px"></div>
+      </div>
+    </div>
+    <button class="btn btn-g btn-w" style="margin-top:4px" onclick="addIng()">Ajouter</button>
     <button class="btn btn-o btn-w" style="margin-top:6px" onclick="closeOv('ov-frigo-add')">Annuler</button>
   </div>
 </div>
@@ -735,7 +764,7 @@ body{font-family:var(--fb);color:var(--txt);font-size:14px}
 // STATE
 // ══════════════════════════════════
 const S={
-  pro:{name:'Alexandre',gender:'m',age:28,weight:75,height:178,activity:1.55,goal:'lose',diets:[],waterGoal:8},
+  pro:{name:'Alexandre',gender:'m',age:28,weight:75,height:178,activity:1.55,goal:'lose',diets:[],waterGoal:8,kcalGoal:0,cookModes:['poele','four','cru'],ingNutrition:{}},
   water:{glasses:0},
   meals:{},plan:{},wlog:[],chatH:[],
   ingredients:{
@@ -760,7 +789,11 @@ function load(){try{const d=localStorage.getItem('kalo5');if(d){const p=JSON.par
 function allIng(){return CATS.flatMap(c=>S.ingredients[c]||[]);}
 
 function bmr(){const p=S.pro;if(!p.weight||!p.height||!p.age)return 1800;return p.gender==='m'?Math.round(10*p.weight+6.25*p.height-5*p.age+5):Math.round(10*p.weight+6.25*p.height-5*p.age-161);}
-function tdee(){const t=Math.round(bmr()*(parseFloat(S.pro.activity)||1.55));return S.pro.goal==='lose'?Math.max(1200,t-500):S.pro.goal==='gain'?t+300:t;}
+function tdee(){
+  if(S.pro.kcalGoal&&S.pro.kcalGoal>0)return S.pro.kcalGoal;
+  const t=Math.round(bmr()*(parseFloat(S.pro.activity)||1.55));
+  return S.pro.goal==='lose'?Math.max(1200,t-500):S.pro.goal==='gain'?t+300:t;
+}
 function imcVal(){const p=S.pro;if(!p.weight||!p.height)return null;return Math.round(p.weight/((p.height/100)**2)*10)/10;}
 
 // ══════════════════════════════════
@@ -844,29 +877,6 @@ function tapW(i){S.water.glasses=i<S.water.glasses?i:i+1;save();renderWater();if
 // ══════════════════════════════════
 // SCAN
 // ══════════════════════════════════
-let scanMode='photo',scanStream=null;
-function openScan(mode){
-  scanMode=mode;
-  const ov=document.getElementById('scan-ov');ov.style.display='flex';
-  document.getElementById('scan-ttl').textContent=mode==='photo'?'Analyse photo IA':'Scanner code-barres';
-  document.getElementById('scan-lbl').textContent=mode==='photo'?'Pointez vers votre plat':'Alignez le code-barres';
-  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
-    navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{scanStream=s;document.getElementById('scan-vid').srcObject=s;}).catch(()=>{document.getElementById('scan-lbl').textContent='Simulation active';});
-  }
-}
-function closeScan(){document.getElementById('scan-ov').style.display='none';if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}}
-async function captureScan(){
-  closeScan();openTab(1);
-  addAIMsg(scanMode==='photo'?'Photo capturée, analyse en cours…':'Code-barres scanné, recherche du produit…');
-  setTyping(true);await delay(1100);setTyping(false);
-  if(scanMode==='photo'){
-    const f=[{name:'Bol de riz aux légumes',kcal:420,g:72,p:12,l:8},{name:'Omelette champignons',kcal:280,g:4,p:22,l:18},{name:'Salade César poulet',kcal:380,g:18,p:34,l:18}];
-    showMealResult(f[Math.floor(Math.random()*f.length)]);
-  }else{
-    const ps=[{name:'Yaourt grec nature (100g)',kcal:97,g:4,p:9,l:5},{name:'Barre protéinée (50g)',kcal:195,g:22,p:20,l:5}];
-    showMealResult(ps[Math.floor(Math.random()*ps.length)]);
-  }
-}
 function showMealResult(m){addAIMsg(`Voici ce que j'ai identifié :<div class="meal-card"><div class="mc-n">${m.name}</div><div class="mc-k">${m.kcal} kcal</div><div class="mc-tags"><span class="mc-tag" style="color:#3ad8a0">${m.g}g glucides</span><span class="mc-tag" style="color:#3a9de8">${m.p}g protéines</span><span class="mc-tag" style="color:#e8c03a">${m.l}g lipides</span></div><div class="mc-acts"><button class="btn btn-g btn-sm" onclick='confirmMeal(${JSON.stringify(m)})'>Ajouter au journal</button></div></div>`);}
 
 // ══════════════════════════════════
@@ -876,7 +886,8 @@ function initChat(){
   S.chatH=[];
   const h=new Date().getHours(),ings=allIng();
   const ingList=ings.slice(0,8).join(', ')+(ings.length>8?'…':'');
-  addAIMsg(`Bonjour ${S.pro.name||''} ! Je suis <strong>KALO</strong>, ton coach nutrition.<br><br>Tu as <strong>${ings.length} ingrédients</strong> dans ton frigo (${ingList}).<br>Il te reste <strong>${Math.max(0,tdee()-tmeals().reduce((a,m)=>a+m.kcal,0))} kcal</strong> aujourd'hui.<br><br>Demande-moi une recette, estime des calories, ou utilise le <strong>+</strong> pour sélectionner tes ingrédients.`);
+  const cooks=(S.pro.cookModes&&S.pro.cookModes.length)?S.pro.cookModes.join(', '):'non définis';
+  addAIMsg(`Bonjour ${S.pro.name||''} ! Je suis <strong>KALO</strong>, ton coach nutrition.<br><br>Tu as <strong>${ings.length} ingrédients</strong> dans ton frigo (${ingList}).<br>Il te reste <strong>${Math.max(0,tdee()-tmeals().reduce((a,m)=>a+m.kcal,0))} kcal</strong> aujourd'hui (objectif : <strong>${tdee()} kcal</strong>).<br>Modes de cuisson : ${cooks}.<br><br>Demande-moi une recette, estime des calories, ou utilise le <strong>+</strong> pour sélectionner tes ingrédients.`);
 }
 function renderChatBadge(){
   const e=tmeals().reduce((a,m)=>a+(m.kcal||0),0);
@@ -907,15 +918,18 @@ async function sendMsg(){
   addUserMsg(text);setTyping(true);
   const p=S.pro,e=tmeals().reduce((a,m)=>a+(m.kcal||0),0),t=tdee();
   const ings=allIng();
+  const cookStr=(p.cookModes&&p.cookModes.length)?p.cookModes.join(', '):'toutes méthodes';
   const sys=`Tu es KALO, coach nutrition IA bienveillant. Français, chaleureux, direct.
 Profil: ${p.gender==='m'?'Homme':'Femme'}, ${p.age}ans, ${p.weight}kg, ${p.height}cm, objectif: ${p.goal}. Régimes: ${p.diets?.join(',')||'aucun'}.
-TDEE: ${t} kcal/j. Aujourd'hui: ${e}/${t} kcal mangés. Repas d'aujourd'hui: ${tmeals().map(m=>m.name).join(', ')||'aucun'}.
+Objectif calorique: ${t} kcal/j${p.kcalGoal&&p.kcalGoal>0?' (défini manuellement par l\'utilisateur)':' (calculé via TDEE)'}. Aujourd'hui: ${e}/${t} kcal mangés. Repas d'aujourd'hui: ${tmeals().map(m=>m.name).join(', ')||'aucun'}.
 FRIGO (UNIQUEMENT ces ingrédients disponibles): ${ings.join(', ')}.
+MODES DE CUISSON DISPONIBLES: ${cookStr}. N'utilise que ces modes dans les recettes.
 RÈGLES IMPORTANTES:
 - Pour les recettes: n'utilise QUE les ingrédients listés dans le frigo. N'invente AUCUN ingrédient absent.
+- Adapte TOUJOURS les recettes à l'objectif calorique de ${t} kcal/j.
 - Donne les quantités précises en grammes pour chaque ingrédient.
 - Conversions: riz 100g cru=300g cuit, pâtes 100g cru=250g cuit, lentilles 100g cru=240g cuit.
-- Structure recette: nom évocateur, kcal totales, macros G/P/L en grammes, liste ingrédients avec quantités, étapes courtes.
+- Structure recette: nom évocateur, kcal totales, macros G/P/L en grammes, liste ingrédients avec quantités, étapes courtes avec méthode de cuisson.
 - Pour estimer des calories: donne kcal + macros G/P/L/F.
 Réponds de façon concise. Markdown simple.`;
   S.chatH.push({role:'user',content:text});
@@ -1234,14 +1248,38 @@ function openFrigoAddModal(){
   const chips=document.getElementById('cat-chips');
   chips.innerHTML=CATS.map(c=>`<div class="dchip ${c===S.selCat?'active':''}" onclick="selCat(this,'${c}')">${CAT_N[c]}</div>`).join('');
   document.getElementById('new-ing').value='';
+  ['ing-kcal','ing-prot','ing-gluc','ing-lip'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  // collapse advanced section
+  const adv=document.getElementById('frigo-adv');if(adv)adv.style.display='none';
+  const arrow=document.getElementById('frigo-adv-arrow');if(arrow)arrow.style.transform='';
   openOv('ov-frigo-add');
 }
 function selCat(el,cat){S.selCat=cat;document.querySelectorAll('#cat-chips .dchip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+function toggleFrigoAdv(){
+  const el=document.getElementById('frigo-adv');
+  const arrow=document.getElementById('frigo-adv-arrow');
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  arrow.style.transform=open?'':'rotate(180deg)';
+}
 function addIng(){
   const v=document.getElementById('new-ing').value.trim();if(!v)return;
   if(!S.ingredients[S.selCat])S.ingredients[S.selCat]=[];
   if(!S.ingredients[S.selCat].includes(v))S.ingredients[S.selCat].push(v);
+  // Save optional nutrition
+  const kcal=parseFloat(document.getElementById('ing-kcal').value)||0;
+  const prot=parseFloat(document.getElementById('ing-prot').value)||0;
+  const gluc=parseFloat(document.getElementById('ing-gluc').value)||0;
+  const lip=parseFloat(document.getElementById('ing-lip').value)||0;
+  if(kcal>0){
+    if(!S.pro.ingNutrition)S.pro.ingNutrition={};
+    S.pro.ingNutrition[v.toLowerCase()]={kcal,p:prot,g:gluc,l:lip};
+    // Also add to NDB for auto-estimation
+    NDB[v.toLowerCase()]=[kcal,'g',null];
+  }
   save();closeOv('ov-frigo-add');renderFrigo();
+  // Reset advanced fields
+  ['ing-kcal','ing-prot','ing-gluc','ing-lip'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 document.getElementById('frigo-add-btn').addEventListener('click',openFrigoAddModal);
 document.getElementById('fsearch').addEventListener('input',e=>renderFrigo(e.target.value));
@@ -1439,20 +1477,52 @@ function renderMacros(){
     .map(it=>`<div class="prog-item"><div class="prog-lbl"><span>${it.l}</span><span style="color:var(--txt)">${it.v}g moy/j — ${it.pct}%</span></div><div class="prog-bar"><div class="prog-fill" style="width:${it.pct}%;background:${it.c}"></div></div></div>`).join('');
 }
 function renderWeightChart(){
-  const logs=S.wlog.slice(-30),el=document.getElementById('wstats');
-  if(logs.length<2){el.innerHTML='<div style="font-size:10px;color:var(--txt3)">Enregistre ton poids régulièrement</div>';document.getElementById('wsvg').innerHTML='';return;}
-  const vals=logs.map(l=>l.w),mn=Math.min(...vals)-1,mx=Math.max(...vals)+1;
-  const W=320,H=110,pad=16;
-  const x=i=>pad+(i/(logs.length-1))*(W-2*pad);
-  const y=v=>H-pad-((v-mn)/(mx-mn||1))*(H-2*pad);
-  document.getElementById('wsvg').innerHTML=`<polyline points="${logs.map((l,i)=>`${x(i)},${y(l.w)}`).join(' ')}" fill="none" stroke="var(--g)" stroke-width="2" stroke-linejoin="round"/>${logs.map((l,i)=>`<circle cx="${x(i)}" cy="${y(l.w)}" r="2.8" fill="var(--g)"/>`).join('')}<text x="${x(logs.length-1)}" y="${y(vals[vals.length-1])-6}" fill="var(--g)" font-size="9" font-family="Syne" text-anchor="middle">${vals[vals.length-1]}kg</text>`;
-  const diff=Math.round((vals[vals.length-1]-vals[0])*10)/10;
-  el.innerHTML=`<div class="wst"><div class="wv">${vals[vals.length-1]}kg</div><div class="wl">Actuel</div></div><div class="wst"><div class="wv" style="color:${diff<0?'var(--g)':'var(--ora)'}">${diff>0?'+':''}${diff}kg</div><div class="wl">Évolution</div></div><div class="wst"><div class="wv">${Math.min(...vals)}kg</div><div class="wl">Min</div></div>`;
+  const logs=S.wlog.slice(-60),el=document.getElementById('wstats');
+  const svg=document.getElementById('wsvg');
+  if(!el||!svg)return;
+  if(logs.length<1){el.innerHTML='<div style="font-size:10px;color:var(--txt3)">Enregistre ton poids régulièrement</div>';svg.innerHTML='';return;}
+  if(logs.length===1){
+    el.innerHTML=`<div class="wst"><div class="wv">${logs[0].w}kg</div><div class="wl">Enregistré le ${logs[0].d.slice(5).replace('-','/')}</div></div>`;
+    svg.innerHTML=`<circle cx="160" cy="60" r="5" fill="var(--g)"/><text x="160" y="48" fill="var(--g)" font-size="10" font-family="Syne" text-anchor="middle">${logs[0].w}kg</text>`;
+    return;
+  }
+  const vals=logs.map(l=>l.w),mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;
+  const W=320,H=100,padL=8,padR=8,padT=14,padB=20;
+  const n=logs.length;
+  const x=i=>padL+(i/(n-1))*(W-padL-padR);
+  const y=v=>padT+((mx-v)/(mx-mn||1))*(H-padT-padB);
+  // Area fill
+  const pts=logs.map((l,i)=>`${x(i).toFixed(1)},${y(l.w).toFixed(1)}`).join(' ');
+  const areaPath=`M${x(0).toFixed(1)},${H-padB} `+logs.map((l,i)=>`L${x(i).toFixed(1)},${y(l.w).toFixed(1)}`).join(' ')+` L${x(n-1).toFixed(1)},${H-padB} Z`;
+  // X axis labels (show first, middle, last)
+  const showIdxs=new Set([0,Math.floor((n-1)/2),n-1]);
+  const lbls=[...showIdxs].map(i=>{
+    const d=logs[i].d.slice(5).replace('-','/');
+    return `<text x="${x(i).toFixed(1)}" y="${H}" fill="var(--txt3)" font-size="8" font-family="DM Sans" text-anchor="middle">${d}</text>`;
+  }).join('');
+  svg.innerHTML=`
+    <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--g)" stop-opacity=".18"/><stop offset="100%" stop-color="var(--g)" stop-opacity="0"/></linearGradient></defs>
+    <path d="${areaPath}" fill="url(#wg)"/>
+    <polyline points="${pts}" fill="none" stroke="var(--g)" stroke-width="2" stroke-linejoin="round"/>
+    ${logs.map((l,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(l.w).toFixed(1)}" r="${n>20?1.8:3}" fill="var(--g)"/>`).join('')}
+    <text x="${x(n-1).toFixed(1)}" y="${(y(vals[n-1])-5).toFixed(1)}" fill="var(--g)" font-size="9" font-family="Syne" font-weight="700" text-anchor="middle">${vals[n-1]}kg</text>
+    ${lbls}`;
+  const diff=Math.round((vals[n-1]-vals[0])*10)/10;
+  el.innerHTML=`<div class="wst"><div class="wv">${vals[n-1]}kg</div><div class="wl">Actuel</div></div><div class="wst"><div class="wv" style="color:${diff<=0?'var(--g)':'var(--ora)'}">${diff>0?'+':''}${diff}kg</div><div class="wl">Évolution</div></div><div class="wst"><div class="wv">${Math.min(...vals)}kg</div><div class="wl">Min</div></div>`;
 }
 function saveWeight(){
   const v=parseFloat(document.getElementById('winp').value);if(!v||v<30||v>300)return;
-  S.wlog.push({w:v,d:td()});S.pro.weight=v;save();renderStats();document.getElementById('winp').value='';
-  showToast('Poids '+v+'kg enregistré','','');
+  const datePicker=document.getElementById('wdate');
+  const d=datePicker&&datePicker.value?datePicker.value:td();
+  // Replace existing entry for same date or add new
+  const idx=S.wlog.findIndex(e=>e.d===d);
+  if(idx>=0)S.wlog[idx].w=v;else S.wlog.push({w:v,d});
+  S.wlog.sort((a,b)=>a.d.localeCompare(b.d));
+  if(d===td())S.pro.weight=v;
+  save();renderWeightChart();
+  document.getElementById('winp').value='';
+  if(datePicker)datePicker.value='';
+  showToast('Poids '+v+'kg — '+d+' enregistré','','');
 }
 function renderIMC(){
   const v=imcVal();if(!v){document.getElementById('imc-v').textContent='—';return;}
@@ -1492,6 +1562,11 @@ function syncPro(){
   document.querySelectorAll('.dchip').forEach(c=>{const d=c.getAttribute('onclick')?.match(/'(\w+)'\)/)?.[1];if(d)c.classList.toggle('active',p.diets?.includes(d));});
   updateTDEE();
   applyTheme();
+  const kg=document.getElementById('p-kcal-goal');if(kg)kg.value=p.kcalGoal||'';
+  document.querySelectorAll('#cook-chips .dchip').forEach(c=>{
+    const m=c.getAttribute('onclick')?.match(/'([\w-]+)'\)/)?.[1];
+    if(m)c.classList.toggle('active',(p.cookModes||[]).includes(m));
+  });
   document.getElementById('pav-n').textContent=p.name||'Mon profil';
   const gl={lose:'Perte de poids',maintain:'Maintien',gain:'Prise de masse',health:'Santé générale'};
   document.getElementById('pav-b').textContent=gl[p.goal]||'—';
@@ -1502,12 +1577,23 @@ function savePro(){
   p.weight=parseFloat(document.getElementById('p-w').value)||0;p.height=parseFloat(document.getElementById('p-h').value)||0;
   p.activity=parseFloat(document.getElementById('p-act').value)||1.55;
   p.waterGoal=parseInt(document.getElementById('p-wg').value)||8;
-  updateTDEE();save();
+  p.kcalGoal=parseInt(document.getElementById('p-kcal-goal').value)||0;
+  updateTDEE();save();renderDash();
+}
+function toggleCook(el,mode){
+  if(!S.pro.cookModes)S.pro.cookModes=[];
+  const i=S.pro.cookModes.indexOf(mode);
+  if(i>=0)S.pro.cookModes.splice(i,1);else S.pro.cookModes.push(mode);
+  el.classList.toggle('active');save();
 }
 function setGen(g){S.pro.gender=g;document.getElementById('gm').classList.toggle('active',g==='m');document.getElementById('gf').classList.toggle('active',g==='f');savePro();}
 function setGoal(g){S.pro.goal=g;document.querySelectorAll('.gbtn').forEach(b=>b.classList.toggle('active',b.dataset.g===g));savePro();}
 function toggleDiet(el,d){if(!S.pro.diets)S.pro.diets=[];const i=S.pro.diets.indexOf(d);if(i>=0)S.pro.diets.splice(i,1);else S.pro.diets.push(d);el.classList.toggle('active');save();}
-function updateTDEE(){document.getElementById('tdee-big').textContent=tdee();document.getElementById('bmr-info').innerHTML='BMR: '+bmr()+' kcal<br>×'+S.pro.activity;}
+function updateTDEE(){
+  const t=tdee(),manual=S.pro.kcalGoal&&S.pro.kcalGoal>0;
+  document.getElementById('tdee-big').textContent=Math.round(bmr()*(parseFloat(S.pro.activity)||1.55));
+  document.getElementById('bmr-info').innerHTML='BMR: '+bmr()+' kcal<br>×'+S.pro.activity+(manual?'<br><span style="color:var(--g)">Objectif manuel : '+t+' kcal</span>':'');
+}
 
 // ══ EXPORT ══
 let expP='day';
@@ -1555,6 +1641,10 @@ function tAct(){if(toastFn)toastFn();hideToast();}
 load();
 applyTheme();
 planDay=td();
+// Set today as default date for weight picker
+const wdEl=document.getElementById('wdate');if(wdEl)wdEl.value=td();
+// Load saved ingNutrition into NDB
+if(S.pro.ingNutrition){Object.entries(S.pro.ingNutrition).forEach(([k,v])=>{NDB[k]=[v.kcal,'g',null];});}
 renderDash();
 initChat();
 renderFrigo();
