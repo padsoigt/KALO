@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KALO - Coach nutrition intelligent</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/padsoigt/KALO/main/picto.png">
+<link rel="shortcut icon" href="https://raw.githubusercontent.com/padsoigt/KALO/main/picto.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/padsoigt/KALO/main/picto.png">
+<meta name="theme-color" content="#4A9A49">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="KALO">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+
+</head>
+
+
+</head>
+<body>
+<!-- ONBOARDING -->
+<div id="onboarding-screen">
+  <div class="ob-wrap">
+    <div class="ob-logo">
+      <svg viewBox="0 0 100 100"><path d="M50 8 C24 8, 4 28, 4 52 C4 76, 24 96, 50 96 C64 96, 77 90, 85 79 L85 58 C79 70, 66 79, 52 79 C35 79, 21 65, 21 48 C21 31, 35 17, 52 17 C60 17, 67 20, 72 25 L72 8 C65 8, 57 8, 50 8Z" fill="#6BBF6A"/><circle cx="73" cy="31" r="10" fill="#6BBF6A"/><circle cx="84" cy="50" r="7" fill="#6BBF6A"/></svg>
+      <h1 id="ob-logo-text">KALO</h1>
+    </div>
+    <p class="ob-tagline">Votre coach nutrition personnel.<br><strong>Perdez du poids</strong> intelligemment, avec ce que vous avez dans votre frigo.</p>
+
+    <div class="ob-steps-indicator">
+      <div class="ob-dot active" id="ob-dot-0"></div>
+      <div class="ob-dot" id="ob-dot-1"></div>
+      <div class="ob-dot" id="ob-dot-2"></div>
+    </div>
+
+    <!-- STEP 0 : Identité -->
+    <div class="ob-step active" id="ob-step-0">
+      <div class="ob-section">
+        <h3>👋 Commençons par vous connaître</h3>
+        <div class="ob-field">
+          <label>Votre prénom</label>
+          <input type="text" id="ob-name" placeholder="Ex : Marie" maxlength="30">
+        </div>
+        <div class="ob-field">
+          <label>Genre</label>
+          <div class="ob-gender">
+            <button id="ob-btn-homme" class="active" onclick="obSetGender('homme')">♂ Homme</button>
+            <button id="ob-btn-femme" onclick="obSetGender('femme')">♀ Femme</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div class="ob-field"><label>Âge</label><input type="number" id="ob-age" placeholder="26" min="10" max="100"></div>
+          <div class="ob-field"><label>Poids (kg)</label><input type="number" id="ob-weight" placeholder="70" min="30" max="300"></div>
+          <div class="ob-field"><label>Taille (cm)</label><input type="number" id="ob-height" placeholder="170" min="100" max="250"></div>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-btn-next" onclick="obNext(0)">Continuer →</button>
+      </div>
+    </div>
+
+    <!-- STEP 1 : Activité + Objectif -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-section">
+        <h3>⚡ Votre niveau d'activité</h3>
+        <div class="ob-activity" id="ob-activity">
+          <div class="ob-act-opt selected" onclick="obSetActivity(this,'sedentaire')"><span class="n">Sédentaire</span><span class="d">Peu ou pas d'exercice</span></div>
+          <div class="ob-act-opt" onclick="obSetActivity(this,'leger')"><span class="n">Légèrement actif</span><span class="d">1-3 j/semaine</span></div>
+          <div class="ob-act-opt" onclick="obSetActivity(this,'modere')"><span class="n">Modérément actif</span><span class="d">3-5 j/semaine</span></div>
+          <div class="ob-act-opt" onclick="obSetActivity(this,'actif')"><span class="n">Très actif</span><span class="d">6-7 j/semaine</span></div>
+        </div>
+      </div>
+      <div class="ob-section">
+        <h3>🎯 Votre objectif de perte de poids</h3>
+        <div class="ob-goal" id="ob-goal">
+          <div class="ob-goal-opt" onclick="obSetGoal(this,'deficit_doux')">
+            <div class="gn">🌿 Perte douce</div>
+            <div class="gd">Approche progressive, idéale pour durer</div>
+            <div class="gk">−250 kcal/jour · ~0.25 kg/semaine</div>
+          </div>
+          <div class="ob-goal-opt selected" onclick="obSetGoal(this,'deficit_modere')">
+            <div class="gn">🔥 Perte modérée <span style="background:var(--green-dark);color:white;font-size:10px;padding:2px 6px;border-radius:20px;margin-left:6px">Recommandé</span></div>
+            <div class="gd">Efficace et soutenable, sans privation extrême</div>
+            <div class="gk">−500 kcal/jour · ~0.5 kg/semaine</div>
+          </div>
+          <div class="ob-goal-opt" onclick="obSetGoal(this,'deficit_fort')">
+            <div class="gn">⚡ Perte rapide</div>
+            <div class="gd">Résultats plus rapides, demande plus de rigueur</div>
+            <div class="gk">−750 kcal/jour · ~0.75 kg/semaine</div>
+          </div>
+          <div class="ob-goal-opt" onclick="obSetGoal(this,'maintien')">
+            <div class="gn">⚖️ Maintien du poids</div>
+            <div class="gd">Aucun déficit calorique</div>
+            <div class="gk">0 kcal de déficit</div>
+          </div>
+          <div class="ob-goal-opt" id="ob-custom-opt" onclick="obSetGoal(this,'custom')">
+            <div class="gn">🎛️ Déficit personnalisé</div>
+            <div class="gd">Définissez votre propre déficit calorique</div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+              <span style="font-size:13px;color:var(--text-muted)">Déficit :</span>
+              <input type="number" id="ob-custom-deficit" min="100" max="1200" step="50" value="600"
+                style="width:80px;padding:6px 10px;border:1.5px solid var(--green-dark);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:var(--green-glow);outline:none;text-align:center"
+                onclick="event.stopPropagation()" oninput="obUpdateCustomDeficit()">
+              <span style="font-size:13px;color:var(--green-glow);font-weight:600">kcal/jour</span>
+              <span id="ob-custom-kgweek" style="font-size:12px;color:var(--text-muted)">~0.6 kg/sem</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-btn-back" onclick="obBack(1)">← Retour</button>
+        <button class="ob-btn-next" onclick="obNext(1)">Continuer →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 : Récapitulatif -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-section">
+        <h3>✅ Votre plan calorique personnalisé</h3>
+        <div class="ob-preview">
+          <h4>📊 Résumé</h4>
+          <div class="ob-row"><span>🔥 Métabolisme de base</span><span id="ob-bmr-val">—</span></div>
+          <div class="ob-row"><span>⚡ Dépense totale (TDEE)</span><span id="ob-tdee-val">—</span></div>
+          <div class="ob-row"><span>📉 Déficit journalier</span><span id="ob-deficit-val">—</span></div>
+          <div class="ob-row"><span>🎯 Budget calorique / jour</span><span id="ob-budget-val">—</span></div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6">💡 Ces données restent sur <strong>votre appareil</strong> uniquement. Vous pourrez les modifier à tout moment dans la section Profil.</p>
+      <div class="ob-actions">
+        <button class="ob-btn-back" onclick="obBack(2)">← Retour</button>
+        <button class="ob-btn-next" onclick="obFinish()">Commencer avec KALO 🚀</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="header">
+    <div class="header-logo">
+      <img src="https://raw.githubusercontent.com/padsoigt/KALO/main/picto.png" style="width:36px;height:36px;border-radius:10px;object-fit:cover" alt="KALO">
+      <div class="header-sub">
+        <h1 id="header-logo-text">KALO</h1>
+        <span>Coach nutrition intelligent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- FRIGO -->
+    <div class="screen" id="screen-frigo">
+      <div class="frigo-header">
+        <div><h2>Mon Frigo</h2><div class="count" id="frigo-count">0 ingrédients actifs</div></div>
+        <button class="btn-add-green" id="frigo-add-btn">＋ Ajouter</button>
+      </div>
+      <div class="import-export-bar">
+        <button class="ie-btn" onclick="exportFrigo()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter mon frigo
+        </button>
+        <button class="ie-btn" onclick="triggerImportFrigo()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Importer mon frigo
+        </button>
+        <input type="file" id="import-frigo-file" accept=".json" style="display:none" onchange="importFrigo(this)">
+      </div>
+      <div class="frigo-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Rechercher un ingrédient..." id="frigo-search-input">
+      </div>
+      <div id="frigo-list"></div>
+      <div class="archive-section" style="margin-bottom:20px">
+        <button class="archive-toggle" id="archive-toggle-btn">
+          🗃️ Archive
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="archive-body" id="archive-body"></div>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="screen" id="screen-agenda">
+      <div class="agenda-top">
+        <div><h2>Agenda</h2><div style="font-size:12px;color:var(--text-muted)" id="agenda-month-lbl">Mai 2026</div></div>
+        <button class="btn-add-green" id="agenda-add-btn" onclick="openMealModal()">＋ Ajouter</button>
+      </div>
+      <div class="import-export-bar">
+        <button class="ie-btn" onclick="exportMeals()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter tous les repas
+        </button>
+        <button class="ie-btn" onclick="triggerImportMeals()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Importer des repas
+        </button>
+        <input type="file" id="import-meals-file" accept=".json" style="display:none" onchange="importMeals(this)">
+      </div>
+      <div class="calendar-wrap">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+          <span id="cal-month-title">Mai 2026</span>
+          <button class="cal-nav-btn" onclick="calNext()">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div class="week-nav" id="week-nav"></div>
+      <div id="day-content"></div>
+    </div>
+
+    <!-- ANALYSE -->
+    <!-- PROFIL -->
+    <div class="screen" id="screen-profil">
+      <div style="padding:20px 20px 0;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <h2 style="font-family:'DM Serif Display',serif;font-size:26px">Mon profil</h2>
+          <p style="font-size:12px;color:var(--text-muted)">Paramètres & objectifs</p>
+        </div>
+      </div>
+      <div style="padding:0 20px">
+
+        <!-- Mode d'affichage -->
+        <div class="profile-card" style="margin-bottom:14px">
+          <h3>🎨 Mode d'affichage</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s" id="mode-opt-light" onclick="setDisplayMode('light')">
+              <span style="font-size:18px">☀️</span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">Mode clair</div><div style="font-size:12px;color:var(--text-muted)">Fond blanc, touches vertes</div></div>
+              <div id="mode-check-light" style="width:18px;height:18px;border-radius:50%;background:var(--green-dark);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 12 12" width="12" height="12"><polyline points="2,6 5,9 10,3" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s" id="mode-opt-dark" onclick="setDisplayMode('dark')">
+              <span style="font-size:18px">🌙</span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">Mode sombre</div><div style="font-size:12px;color:var(--text-muted)">Fond noir, touches vertes</div></div>
+              <div id="mode-check-dark" style="width:18px;height:18px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;opacity:.3"></div>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s" id="mode-opt-mao" onclick="setDisplayMode('mao')">
+              <span style="font-size:18px">🚩</span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">Communisme de Mao</div><div style="font-size:12px;color:var(--text-muted)">Fond blanc, touches rouges révolutionnaires</div></div>
+              <div id="mode-check-mao" style="width:18px;height:18px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;opacity:.3"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Infos personnelles -->
+        <div class="profile-card">
+          <h3>👤 Informations personnelles</h3>
+          <input type="text" id="profile-name" class="profile-name-input" placeholder="Votre prénom">
+          <div class="profile-fields">
+            <div class="field-group"><label>Âge</label><input type="number" id="profile-age" placeholder="26" min="10" max="99"></div>
+            <div class="field-group"><label>Poids (kg)</label><input type="number" id="profile-weight" placeholder="70" min="30" max="300" step="0.1"></div>
+            <div class="field-group"><label>Taille (cm)</label><input type="number" id="profile-height" placeholder="170" min="100" max="250"></div>
+          </div>
+          <div class="field-group" style="margin-bottom:12px">
+            <label>Objectif poids (kg)</label>
+            <input type="number" id="profile-target-weight" placeholder="65" min="30" max="300" step="0.1">
+          </div>
+          <!-- Gender -->
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Genre</div>
+          <div class="gender-toggle">
+            <button id="ob-btn-homme" class="gender-btn active" onclick="obSetGender('homme')">♂ Homme</button>
+            <button id="ob-btn-femme" class="gender-btn" onclick="obSetGender('femme')">♀ Femme</button>
+          </div>
+          <!-- Activity -->
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Niveau d'activité</div>
+          <div class="activity-options">
+            <div class="activity-opt selected" onclick="selectActivity(this,'sedentaire')">
+              <div><div class="oname">🪑 Sédentaire</div><div class="odesc">Peu ou pas d'exercice</div></div>
+            </div>
+            <div class="activity-opt" onclick="selectActivity(this,'leger')">
+              <div><div class="oname">🚶 Léger</div><div class="odesc">1-3 fois/semaine</div></div>
+            </div>
+            <div class="activity-opt" onclick="selectActivity(this,'modere')">
+              <div><div class="oname">🏃 Modéré</div><div class="odesc">3-5 fois/semaine</div></div>
+            </div>
+            <div class="activity-opt" onclick="selectActivity(this,'actif')">
+              <div><div class="oname">💪 Très actif</div><div class="odesc">6-7 fois/semaine</div></div>
+            </div>
+          </div>
+          <!-- Goal -->
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Objectif calorique</div>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div class="activity-opt" onclick="selectGoal(this,'deficit_doux')"><div class="oname">🟢 Déficit doux (-250 kcal)</div></div>
+            <div class="activity-opt selected" onclick="selectGoal(this,'deficit_modere')"><div class="oname">🟡 Déficit modéré (-500 kcal)</div></div>
+            <div class="activity-opt" onclick="selectGoal(this,'deficit_fort')"><div class="oname">🔴 Déficit fort (-750 kcal)</div></div>
+            <div class="activity-opt" onclick="selectGoal(this,'maintien')"><div class="oname">⚖️ Maintien</div></div>
+            <div class="activity-opt" onclick="selectGoal(this,'custom')"><div class="oname">✏️ Personnalisé</div></div>
+          </div>
+          <div id="profile-custom-deficit-wrap" style="display:none;margin-bottom:14px">
+            <div class="field-group"><label>Déficit personnalisé (kcal/jour)</label>
+              <input type="number" id="profile-custom-deficit" placeholder="600" min="100" max="1500">
+            </div>
+          </div>
+          <!-- TDEE preview -->
+          <div id="profile-tdee-preview" style="background:var(--bg-tertiary);border-radius:12px;padding:12px 14px;margin-bottom:14px;border:1px solid var(--border);display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Estimation</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid var(--border)"><span>BMR</span><span id="prev-bmr" style="font-weight:700">—</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid var(--border)"><span>TDEE</span><span id="prev-tdee" style="font-weight:700">—</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;font-weight:700;color:var(--green-glow)"><span>Budget quotidien</span><span id="prev-budget">—</span></div>
+          </div>
+          <button class="btn-save" onclick="saveProfile()">💾 Sauvegarder</button>
+        </div>
+
+        <!-- Objectif pas -->
+        <div class="card" style="margin-top:0">
+          <h4>👟 Objectif de pas</h4>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="steps-goal-input" placeholder="10000" min="1000" max="50000" step="500"
+              style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-tertiary);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;text-align:center;outline:none">
+            <span style="font-size:13px;color:var(--text-muted)">pas/jour</span>
+            <button onclick="saveStepsGoal()" style="padding:10px 14px;border-radius:10px;border:none;background:var(--green-dark);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">OK</button>
+          </div>
+        </div>
+
+        <!-- Objectif eau -->
+        <div class="card" style="margin-top:0">
+          <h4>💧 Objectif hydratation</h4>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="water-goal-input" min="500" max="6000" step="100" placeholder="2000"
+              style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-tertiary);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;text-align:center;outline:none">
+            <span style="font-size:13px;color:var(--text-muted)">ml/jour</span>
+            <button onclick="saveWaterGoal()" style="padding:10px 14px;border-radius:10px;border:none;background:#2980b9;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">OK</button>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+
+    <div class="screen active" id="screen-analyse">
+      <div class="analyse-page">
+
+        <!-- HEADER -->
+        <div style="padding:18px 20px 0;display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <h2 style="font-family:'DM Serif Display',serif;font-size:26px;line-height:1.1">Bonjour <span id="home-name" style="color:var(--green-glow)">👋</span></h2>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:2px" id="home-date">Aujourd'hui</p>
+          </div>
+          <button onclick="showScreen('profil')" style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+
+        <!-- CALORIE RING -->
+        <div style="padding:16px 20px 0">
+          <div style="background:var(--bg-card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:20px">
+              <!-- Ring SVG -->
+              <div style="position:relative;flex-shrink:0;width:110px;height:110px">
+                <svg viewBox="0 0 110 110" width="110" height="110">
+                  <!-- Background ring -->
+                  <circle cx="55" cy="55" r="46" fill="none" stroke="var(--border)" stroke-width="10"/>
+                  <!-- Progress ring -->
+                  <circle cx="55" cy="55" r="46" fill="none" stroke="var(--green-glow)" stroke-width="10"
+                    stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"
+                    id="calorie-ring" style="transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);transform:rotate(-90deg);transform-origin:55px 55px"/>
+                </svg>
+                <!-- Center text -->
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                  <span id="ring-remaining" style="font-size:22px;font-weight:800;color:var(--text);line-height:1">0</span>
+                  <span style="font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">restantes</span>
+                </div>
+              </div>
+              <!-- Right stats -->
+              <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Consommées</div>
+                    <div id="ring-consumed" style="font-size:18px;font-weight:800;color:var(--orange)">0 kcal</div>
+                  </div>
+                  <div style="text-align:right">
+                    <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Objectif</div>
+                    <div id="ring-budget" style="font-size:18px;font-weight:800;color:var(--text)">0 kcal</div>
+                  </div>
+                </div>
+                <!-- Burned (BMR) -->
+                <div style="background:var(--bg-tertiary);border-radius:10px;padding:8px 11px;border:1px solid var(--border)">
+                  <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Brûlées (métabolisme)</div>
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:16px">🔥</span>
+                    <span id="ring-burned" style="font-size:16px;font-weight:800;color:var(--green-glow)">0 kcal</span>
+                    <span style="font-size:11px;color:var(--text-muted)" id="ring-steps-bonus"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Macro bars -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px">
+              <div id="macro-card-p" style="background:var(--bg-tertiary);border-radius:10px;padding:9px 10px;border:1px solid var(--border)">
+                <div style="font-size:10px;font-weight:700;color:#e74c3c;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Protéines</div>
+                <div style="font-size:15px;font-weight:800;color:var(--text)" id="macro-p-val">0g</div>
+                <div style="height:4px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:5px">
+                  <div id="macro-p-bar" style="height:100%;background:#e74c3c;border-radius:3px;width:0%;transition:width .6s"></div>
+                </div>
+              </div>
+              <div id="macro-card-g" style="background:var(--bg-tertiary);border-radius:10px;padding:9px 10px;border:1px solid var(--border)">
+                <div style="font-size:10px;font-weight:700;color:#f39c12;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Glucides</div>
+                <div style="font-size:15px;font-weight:800;color:var(--text)" id="macro-g-val">0g</div>
+                <div style="height:4px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:5px">
+                  <div id="macro-g-bar" style="height:100%;background:#f39c12;border-radius:3px;width:0%;transition:width .6s"></div>
+                </div>
+              </div>
+              <div id="macro-card-l" style="background:var(--bg-tertiary);border-radius:10px;padding:9px 10px;border:1px solid var(--border)">
+                <div style="font-size:10px;font-weight:700;color:#2980b9;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Lipides</div>
+                <div style="font-size:15px;font-weight:800;color:var(--text)" id="macro-l-val">0g</div>
+                <div style="height:4px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:5px">
+                  <div id="macro-l-bar" style="height:100%;background:#2980b9;border-radius:3px;width:0%;transition:width .6s"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEIGHT CHART -->
+        <div style="padding:14px 20px 0">
+          <div class="weight-chart-wrap">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <h4 style="margin-bottom:0">⚖️ Poids & IMC</h4>
+              <button onclick="openWeightPopup()" style="display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:9px;border:1.5px solid var(--border);background:none;color:var(--text-secondary);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                ✏️ Gérer
+              </button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div id="weight-latest-display" style="font-size:20px;font-weight:800;color:var(--green-glow)">— kg</div>
+              <div id="weight-imc-display" style="font-size:13px;color:var(--text-muted);font-weight:600"></div>
+            </div>
+            <svg class="weight-chart-svg" id="weight-chart-svg" viewBox="0 0 360 180" style="height:180px"></svg>
+            <div class="weight-stats" id="weight-stats"></div>
+          </div>
+        </div>
+
+        <!-- STEPS TRACKER -->
+        <div style="padding:0 20px">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <h4 style="margin-bottom:0">👟 Pas du jour</h4>
+              <button onclick="openStepsInput()" style="display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:9px;border:1.5px solid var(--border);background:none;color:var(--text-secondary);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">
+                + Saisir
+              </button>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px">
+              <span id="steps-count" style="font-size:26px;font-weight:800;color:var(--text)">0</span>
+              <span style="font-size:13px;color:var(--text-muted)">/ <span id="steps-goal-lbl">10 000</span> pas</span>
+              <span id="steps-pct-lbl" style="font-size:12px;font-weight:700;color:var(--green-glow);margin-left:auto">0%</span>
+            </div>
+            <div style="height:8px;background:var(--border);border-radius:5px;overflow:hidden;margin-bottom:8px">
+              <div id="steps-bar" style="height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green-glow));border-radius:5px;width:0%;transition:width .7s cubic-bezier(.4,0,.2,1)"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span id="steps-kcal-lbl" style="font-size:12px;color:var(--text-muted)">≈ 0 kcal brûlées</span>
+              <span id="steps-dist-lbl" style="font-size:12px;color:var(--text-muted)">≈ 0 km</span>
+            </div>
+            <!-- Quick steps input (inline) -->
+            <div id="steps-input-wrap" style="display:none;margin-top:10px;display:none">
+              <div style="display:flex;gap:7px;align-items:center;margin-top:10px">
+                <input type="number" id="steps-input" placeholder="ex: 8500" min="0" max="100000"
+                  style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-tertiary);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;text-align:center;outline:none">
+                <button onclick="saveSteps()" style="padding:10px 16px;border-radius:10px;border:none;background:var(--green-dark);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">✓</button>
+                <button onclick="closeStepsInput()" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WATER WIDGET -->
+        <div style="padding:0 20px">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <h4 style="margin-bottom:0">💧 Hydratation du jour</h4>
+              <button onclick="openWaterPopup()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:9px;border:1.5px solid var(--border);background:none;color:var(--text-secondary);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                ✏️ Gérer
+              </button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <div>
+                <span id="water-amount-lbl" style="font-size:22px;font-weight:800;color:#2980b9">0 ml</span>
+                <span style="font-size:13px;color:var(--text-muted);margin-left:5px">/ <span id="water-goal-lbl">2000</span> ml</span>
+              </div>
+              <span id="water-pct-lbl" style="font-size:13px;font-weight:700;color:#2980b9">0%</span>
+            </div>
+            <div style="height:10px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:10px">
+              <div id="water-prog-fill" style="height:100%;background:linear-gradient(90deg,#2980b9,#5dade2);border-radius:6px;width:0%;transition:width .7s cubic-bezier(.4,0,.2,1)"></div>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">
+              <button onclick="addWaterQuick(150,'ml')" style="padding:5px 11px;border-radius:20px;border:1.5px solid #2980b9;background:none;color:#2980b9;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+150ml</button>
+              <button onclick="addWaterQuick(250,'ml')" style="padding:5px 11px;border-radius:20px;border:1.5px solid #2980b9;background:none;color:#2980b9;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+250ml</button>
+              <button onclick="addWaterQuick(500,'ml')" style="padding:5px 11px;border-radius:20px;border:1.5px solid #2980b9;background:none;color:#2980b9;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+500ml</button>
+              <button onclick="addWaterQuick(1,'L')" style="padding:5px 11px;border-radius:20px;border:none;background:#2980b9;color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+1L</button>
+            </div>
+            <div style="display:flex;gap:7px;align-items:center">
+              <input type="number" id="water-custom-input" placeholder="ex: 330" min="1" max="5000"
+                style="flex:1;padding:9px 12px;border-radius:var(--radius-xs);border:1.5px solid var(--border);background:var(--bg-tertiary);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;outline:none;text-align:center">
+              <select id="water-custom-unit" style="padding:9px 8px;border-radius:var(--radius-xs);border:1.5px solid var(--border);background:var(--bg-tertiary);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;outline:none">
+                <option value="ml">ml</option><option value="cl">cl</option><option value="L">L</option>
+              </select>
+              <button onclick="addWaterCustom()" style="padding:9px 14px;border-radius:var(--radius-xs);border:none;background:#2980b9;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">+ Ajouter</button>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ANALYTICS SECTION -->
+        <div style="padding:0 20px 20px">
+          <div class="card" style="padding-bottom:14px">
+
+            <!-- Period selector -->
+            <div style="display:flex;gap:6px;margin-bottom:14px">
+              <button class="period-btn active" id="hbtn-week"   onclick="setHomePeriod(this,'week')">7 jours</button>
+              <button class="period-btn"        id="hbtn-month"  onclick="setHomePeriod(this,'month')">1 mois</button>
+              <button class="period-btn"        id="hbtn-3month" onclick="setHomePeriod(this,'3month')">3 mois</button>
+            </div>
+
+            <!-- Summary cards -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+              <div style="background:var(--bg-tertiary);border-radius:11px;padding:11px 12px;border:1px solid var(--border)">
+                <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Moyenne / jour</div>
+                <div style="font-size:20px;font-weight:800;color:var(--orange)" id="home-avg-kcal">— kcal</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Objectif <span id="home-budget-lbl">—</span> kcal</div>
+              </div>
+              <div style="background:var(--bg-tertiary);border-radius:11px;padding:11px 12px;border:1px solid var(--border)">
+                <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Déficit total</div>
+                <div style="font-size:20px;font-weight:800;color:var(--green-glow)" id="home-deficit-total">— kcal</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="home-period-lbl">sur 7 jours</div>
+              </div>
+            </div>
+
+            <!-- Bar chart + day details -->
+            <div id="home-bar-chart-wrap"></div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="showScreen('analyse')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
+    </button>
+    <button class="nav-item" onclick="showScreen('frigo')">
+      <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="5" y1="10" x2="19" y2="10"/><line x1="9" y1="6" x2="9" y2="9"/></svg>Frigo
+    </button>
+    <button class="nav-item" onclick="showScreen('agenda')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda
+    </button>
+    <button class="nav-item" onclick="showScreen('profil')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+    </button>
+  </nav>
+</div>
+
+<!-- FRIGO POPUP -->
+<div class="overlay" id="frigo-popup-ov">
+  <div class="popup-sheet">
+    <h3>🧊 Mon Frigo</h3>
+    <p class="sub">Sélectionnez des ingrédients à inclure dans votre recette</p>
+    <div class="kcal-max-row">
+      <label>Calories max :</label>
+      <input type="number" class="kcal-max-input" id="kcal-max-input" value="600">
+      <span style="font-size:13px;color:var(--green-glow);font-weight:600">kcal</span>
+    </div>
+    <div class="popup-scroll" id="frigo-popup-items"></div>
+    <div style="margin-top:14px;flex-shrink:0">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Type de repas</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap" id="popup-type-chips">
+        <button class="frigo-chip" onclick="selectPopupType(this,'petit-déjeuner')">Petit-déjeuner</button>
+        <button class="frigo-chip selected" onclick="selectPopupType(this,'déjeuner')">Déjeuner</button>
+        <button class="frigo-chip" onclick="selectPopupType(this,'dîner')">Dîner</button>
+        <button class="frigo-chip" onclick="selectPopupType(this,'snack')">Snack</button>
+      </div>
+    </div>
+    <div class="popup-actions">
+      <button class="btn-cancel" onclick="closeFrigoPopup()">Annuler</button>
+      <button class="btn-go" onclick="generateFromFrigo()">Générer une recette</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD INGREDIENT MODAL -->
+<div class="modal-overlay" id="frigo-modal">
+  <div class="modal-sheet">
+    <h3>Ajouter un ingrédient</h3>
+    <input type="text" class="modal-input" id="new-ingredient" placeholder="Nom de l'ingrédient...">
+    <div class="modal-cats" id="modal-cats">
+      <button type="button" class="cat-chip selected" onclick="selectCat(this,'légumes')">Légumes</button>
+      <button type="button" class="cat-chip" onclick="selectCat(this,'protéines')">Protéines</button>
+      <button type="button" class="cat-chip" onclick="selectCat(this,'céréales')">Céréales</button>
+      <button type="button" class="cat-chip" onclick="selectCat(this,'laitiers')">Laitiers</button>
+      <button type="button" class="cat-chip" onclick="selectCat(this,'fruits')">Fruits</button>
+      <button type="button" class="cat-chip" onclick="selectCat(this,'condiments')">Condiments</button>
+    </div>
+    <!-- Custom nutrition override (for packaged products) -->
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer" onclick="toggleFrigoNutrition()">
+        <span style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Valeurs nutritionnelles personnalisées</span>
+        <span id="frigo-nutr-toggle-icon" style="font-size:14px;color:var(--green-glow)">▼ Afficher</span>
+      </div>
+      <div id="frigo-nutr-fields" style="display:none">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;line-height:1.5">Pour un produit du commerce, renseignez les valeurs du tableau nutritionnel (pour 100g).</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="field-group"><label>Calories (kcal/100g)</label><input type="number" id="frigo-kcal" placeholder="ex: 52" min="0" style="text-align:center"></div>
+          <div class="field-group"><label>Protéines (g/100g)</label><input type="number" id="frigo-prot" placeholder="ex: 3.2" min="0" style="text-align:center"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div class="field-group"><label>Glucides (g)</label><input type="number" id="frigo-gluc" placeholder="ex: 4.8" min="0" style="text-align:center"></div>
+          <div class="field-group"><label>Lipides (g)</label><input type="number" id="frigo-lip" placeholder="ex: 1.6" min="0" style="text-align:center"></div>
+          <div class="field-group"><label>Fibres (g)</label><input type="number" id="frigo-fib" placeholder="ex: 0" min="0" style="text-align:center"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeFrigoModal()">Annuler</button>
+      <button class="btn-confirm" onclick="addIngredient()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT INGREDIENT MODAL -->
+<div class="modal-overlay" id="frigo-edit-modal">
+  <div class="modal-sheet">
+    <h3>Modifier l'ingrédient</h3>
+    <input type="text" class="modal-input" id="edit-ing-name" placeholder="Nom...">
+    <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Valeurs nutritionnelles (pour 100g)</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Ces valeurs remplacent la base de données pour cet aliment. Idéal pour les produits du commerce.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div class="field-group"><label>Calories (kcal/100g)</label><input type="number" id="edit-ing-kcal" placeholder="—" min="0" style="text-align:center"></div>
+      <div class="field-group"><label>Protéines (g)</label><input type="number" id="edit-ing-prot" placeholder="—" min="0" style="text-align:center"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+      <div class="field-group"><label>Glucides (g)</label><input type="number" id="edit-ing-gluc" placeholder="—" min="0" style="text-align:center"></div>
+      <div class="field-group"><label>Lipides (g)</label><input type="number" id="edit-ing-lip" placeholder="—" min="0" style="text-align:center"></div>
+      <div class="field-group"><label>Fibres (g)</label><input type="number" id="edit-ing-fib" placeholder="—" min="0" style="text-align:center"></div>
+    </div>
+    <div id="edit-ing-current-vals" style="font-size:11px;color:var(--text-muted);background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:14px"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeFrigoEditModal()">Annuler</button>
+      <button class="btn-confirm" onclick="saveIngredientEdit()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MEAL MODAL -->
+<div class="modal-overlay" id="meal-modal">
+  <div class="meal-modal-sheet">
+    <h3>Ajouter un repas</h3>
+    <input type="text" class="modal-input" id="new-meal-name" placeholder="Nom du repas...">
+    <div class="type-chips" id="meal-type-chips">
+      <button class="type-chip selected" onclick="selectMealType(this,'petit-déjeuner')">Petit-déjeuner</button>
+      <button class="type-chip" onclick="selectMealType(this,'déjeuner')">Déjeuner</button>
+      <button class="type-chip" onclick="selectMealType(this,'dîner')">Dîner</button>
+      <button class="type-chip" onclick="selectMealType(this,'snack')">Snack</button>
+    </div>
+
+    <!-- Mode toggle -->
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button id="mode-auto-btn" onclick="setMealInputMode('auto')"
+        style="flex:1;padding:9px;border-radius:11px;border:1.5px solid var(--green-dark);background:var(--green-dark);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+        🧮 Estimation auto
+      </button>
+      <button id="mode-manual-btn" onclick="setMealInputMode('manual')"
+        style="flex:1;padding:9px;border-radius:11px;border:1.5px solid var(--border);background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+        ✏️ Saisie manuelle
+      </button>
+    </div>
+
+    <!-- AUTO MODE -->
+    <div id="meal-mode-auto">
+      <div class="ing-section-label">Ingrédients</div>
+      <div class="ing-list" id="ing-list"></div>
+      <button class="add-row-btn" onclick="addIngRow()">＋ Ajouter un ingrédient</button>
+      <div class="kcal-result" id="kcal-result">
+        <div class="kr-lbl">Estimation calorique</div>
+        <div class="kr-num" id="kcal-result-num">— kcal</div>
+      </div>
+      <div class="modal-actions" style="margin-top:10px">
+        <button class="btn-cancel" onclick="closeMealModal()">Annuler</button>
+        <button class="btn-estimate" onclick="estimateKcal()">Estimer les calories</button>
+      </div>
+      <button class="btn-save-meal" id="btn-save-meal" onclick="saveMeal()">Enregistrer le repas</button>
+    </div>
+
+    <!-- MANUAL MODE -->
+    <div id="meal-mode-manual" style="display:none">
+      <div class="manual-kcal-input-wrap">
+        <label>Calories du repas</label>
+        <input type="number" id="manual-kcal" placeholder="ex : 450" min="0" max="5000"
+          class="manual-kcal-big"
+          oninput="document.getElementById('manual-kcal-unit').style.opacity=this.value?'1':'0.4'">
+        <label>Macros (optionnel)</label>
+        <div class="manual-macros-grid">
+          <div class="manual-macro-field">
+            <label>Protéines</label>
+            <input type="number" id="manual-p" placeholder="g" min="0" max="500">
+          </div>
+          <div class="manual-macro-field">
+            <label>Glucides</label>
+            <input type="number" id="manual-g" placeholder="g" min="0" max="500">
+          </div>
+          <div class="manual-macro-field">
+            <label>Lipides</label>
+            <input type="number" id="manual-l" placeholder="g" min="0" max="500">
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeMealModal()">Annuler</button>
+        <button class="btn-estimate" onclick="saveManualMeal()">Enregistrer le repas</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MEAL MODAL -->
+<div class="modal-overlay" id="edit-meal-modal">
+  <div class="meal-modal-sheet">
+    <h3>Modifier le repas</h3>
+    <input type="text" class="modal-input" id="edit-meal-name" placeholder="Nom du repas...">
+    <div class="type-chips" id="edit-type-chips">
+      <button class="type-chip selected" onclick="selectEditMealType(this,'petit-déjeuner')">Petit-déjeuner</button>
+      <button class="type-chip" onclick="selectEditMealType(this,'déjeuner')">Déjeuner</button>
+      <button class="type-chip" onclick="selectEditMealType(this,'dîner')">Dîner</button>
+      <button class="type-chip" onclick="selectEditMealType(this,'snack')">Snack</button>
+    </div>
+    <div class="ing-section-label">Ingrédients</div>
+    <div class="ing-list" id="edit-ing-list"></div>
+    <button class="add-row-btn" onclick="addEditIngRow()">＋ Ajouter un ingrédient</button>
+    <div class="kcal-result" id="edit-kcal-result">
+      <div class="kr-lbl">Estimation calorique</div>
+      <div class="kr-num" id="edit-kcal-result-num">— kcal</div>
+    </div>
+    <div class="modal-actions" style="margin-top:10px">
+      <button class="btn-cancel" onclick="closeEditMealModal()">Annuler</button>
+      <button class="btn-estimate" onclick="estimateEditKcal()">Estimer les calories</button>
+    </div>
+    <button class="btn-save-meal" id="btn-update-meal" onclick="updateMeal()" style="display:block;margin-top:10px">Enregistrer les modifications</button>
+  </div>
+</div>
+
+
+
+<!-- WEIGHT POPUP MODAL -->
+<div class="popup-center-overlay" id="weight-popup-overlay">
+  <div class="popup-center-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="margin-bottom:0">⚖️ Suivi du poids</h3>
+      <button onclick="closeWeightPopup()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>
+
+    <!-- Add new entry -->
+    <div style="background:var(--bg-tertiary);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Ajouter / Modifier une entrée</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="date" id="weight-popup-date"
+          style="flex:1;padding:9px 11px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+        <input type="number" id="weight-popup-kg" placeholder="kg" min="30" max="300" step="0.1"
+          style="width:80px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-align:center;outline:none">
+        <button onclick="addWeightFromPopup()"
+          style="padding:9px 14px;border-radius:10px;border:none;background:var(--green-dark);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">✓ Valider</button>
+      </div>
+    </div>
+
+    <!-- Entries list -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Historique</div>
+    <div id="weight-popup-list" style="max-height:55vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- WATER POPUP MODAL -->
+<div class="popup-center-overlay" id="water-popup-overlay">
+  <div class="popup-center-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="margin-bottom:0">💧 Hydratation du jour</h3>
+      <button onclick="closeWaterPopup()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>
+
+    <div id="water-popup-total" style="font-size:15px;font-weight:700;color:#2980b9;margin-bottom:12px">0 ml / 2000 ml</div>
+
+    <!-- Add new entry -->
+    <div style="background:var(--bg-tertiary);border-radius:12px;padding:13px;border:1px solid var(--border);margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Ajouter une prise</div>
+      <div style="display:flex;gap:7px;margin-bottom:8px">
+        <input type="text" id="water-popup-label" placeholder="Eau, café, thé..." maxlength="30"
+          style="flex:1;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+      </div>
+      <div style="display:flex;gap:7px;align-items:center">
+        <input type="number" id="water-popup-input" placeholder="Quantité" min="1" max="5000"
+          style="flex:1;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-align:center;outline:none">
+        <select id="water-popup-unit"
+          style="padding:8px 8px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;outline:none">
+          <option value="ml">ml</option>
+          <option value="cl">cl</option>
+          <option value="L">L</option>
+        </select>
+        <button onclick="addWaterFromPopup()"
+          style="padding:8px 14px;border-radius:9px;border:none;background:#2980b9;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">+ Ajouter</button>
+      </div>
+      <!-- Quick adds in popup -->
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <button onclick="addWaterQuick(150,'ml')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #2980b9;background:none;color:#2980b9;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+150ml</button>
+        <button onclick="addWaterQuick(250,'ml')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #2980b9;background:none;color:#2980b9;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+250ml</button>
+        <button onclick="addWaterQuick(500,'ml')" style="padding:5px 10px;border-radius:20px;border:1.5px solid #2980b9;background:none;color:#2980b9;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+500ml</button>
+        <button onclick="addWaterQuick(1,'L')" style="padding:5px 10px;border-radius:20px;border:none;background:#2980b9;color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+1L</button>
+      </div>
+    </div>
+
+    <!-- Entries list -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Entrées d'aujourd'hui</div>
+    <div id="water-popup-list" style="max-height:40vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast">
+  <span id="toast-msg">⚖️ Ton poids a changé. Veux-tu recalculer ton TDEE ?</span>
+  <div class="toast-actions">
+    <button class="toast-btn primary" id="toast-primary-btn">Recalculer</button>
+    <button class="toast-btn secondary" onclick="hideToast()">Plus tard</button>
+  </div>
+</div>
+
+
+
+<!-- WEIGHT POPUP -->
+
+<!-- WATER POPUP -->
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast">
+  <span id="toast-msg">⚖️ Ton poids a changé. Veux-tu recalculer ton TDEE ?</span>
+  <div class="toast-actions">
+    <button class="toast-btn primary" id="toast-primary-btn">Recalculer</button>
+    <button class="toast-btn secondary" onclick="hideToast()">Plus tard</button>
+  </div>
+</div>
+
+<!-- Scripts — chargés dans l'ordre des dépendances -->
+<script src="js/database.js"></script>
+<script src="js/nutrition.js"></script>
+<script src="js/utils.js"></script>
+<script src="pages/frigo.js"></script>
+<script src="pages/agenda.js"></script>
+<script src="pages/onboarding.js"></script>
+<script src="pages/accueil.js"></script>
+<script src="pages/profil.js"></script>
+<script src="pages/export.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
+</html>
