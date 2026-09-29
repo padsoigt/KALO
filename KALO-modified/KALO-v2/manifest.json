@@ -1,0 +1,30 @@
+{
+  "name": "KALO — Coach nutrition",
+  "short_name": "KALO",
+  "description": "Suivi nutritionnel — calories, poids, hydratation, pas",
+  "start_url": "/KALO/",
+  "scope": "/KALO/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F2F2",
+  "theme_color": "#4A9A49",
+  "icons": [
+    {
+      "src": "picto.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "picto.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "health",
+    "fitness"
+  ],
+  "lang": "fr"
+}
